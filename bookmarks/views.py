@@ -23,14 +23,19 @@ def add(request):
             bookmark = bookmark_form.save(commit=False)
             bookmark.adder = request.user
             bookmark.save()
-            return HttpResponseRedirect(reverse("bookmarks.views.bookmarks"))
+            if bookmark_form.should_redirect():
+                return HttpResponseRedirect(bookmark.url)
+            else:
+                return HttpResponseRedirect(reverse("bookmarks.views.bookmarks"))
     else:
         initial = {}
-        if 'url' in request.GET:
-            initial['url'] = request.GET["url"]
-        if 'description' in request.GET:
-            initial['description'] = request.GET["description"]
-
+        if "url" in request.GET:
+            initial["url"] = request.GET["url"]
+        if "description" in request.GET:
+            initial["description"] = request.GET["description"]
+        if "redirect" in request.GET:
+            initial["redirect"] = request.GET["redirect"]
+        
         if initial:
             bookmark_form = BookmarkForm(initial=initial)
         else:
