@@ -1,3 +1,7 @@
+from datetime import datetime
+import urlparse
+import urllib2
+
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
@@ -22,6 +26,23 @@ def add(request):
         if bookmark_form.is_valid():
             bookmark = bookmark_form.save(commit=False)
             bookmark.adder = request.user
+
+            try:
+                headers = {
+                    "Accept" : "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5",
+                    "Accept-Language" : "en-us,en;q=0.5",
+                    "Accept-Charset": "ISO-8859-1,utf-8;q=0.7,*;q=0.7",
+                    "Connection" : "close",
+                    ##"User-Agent": settings.URL_VALIDATOR_USER_AGENT
+                    }
+                req = urllib2.Request(bookmark.get_favicon_url() ,None, headers)
+                u = urllib2.urlopen(req)
+                has_favicon = True
+            except: 
+                has_favicon = False
+
+            bookmark.has_favicon = has_favicon
+            bookmark.favicon_checked = datetime.now() 
             bookmark.save()
             if bookmark_form.should_redirect():
                 return HttpResponseRedirect(bookmark.url)

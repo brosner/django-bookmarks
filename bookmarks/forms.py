@@ -22,4 +22,4 @@ class BookmarkForm(forms.ModelForm):
     
     class Meta:
         model = Bookmark
-        exclude = ('adder', 'added',)
+        exclude = ('adder', 'added', 'has_favicon', 'favicon_checked')
