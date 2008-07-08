@@ -19,9 +19,11 @@ class Bookmark(models.Model):
     added = models.DateTimeField(_('added'), default=datetime.now)
 
     def get_favicon_url(self):
-        base_url = '%s://%s' % urlparse.urlsplit(self.url)[:2]
-        favicon_url = urlparse.urljoin(base_url, 'favicon.ico')
-        return favicon_url
+        if self.has_favicon:
+            base_url = '%s://%s' % urlparse.urlsplit(self.url)[:2]
+            favicon_url = urlparse.urljoin(base_url, 'favicon.ico')
+            return favicon_url
+        return False
 
     
     class Meta:
