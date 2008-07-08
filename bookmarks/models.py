@@ -18,13 +18,20 @@ class Bookmark(models.Model):
     adder = models.ForeignKey(User, related_name="added_bookmarks", verbose_name=_('adder'))
     added = models.DateTimeField(_('added'), default=datetime.now)
 
-    def get_favicon_url(self):
-        if self.has_favicon:
+    def get_favicon_url(self, force=False):
+        """
+        return the URL of the favicon (if it exists) for the site this
+        bookmark is on other return None.
+        
+        If force=True, the URL will be calculated even if it doesn't
+        exist.
+        """
+        if self.has_favicon or force:
             base_url = '%s://%s' % urlparse.urlsplit(self.url)[:2]
             favicon_url = urlparse.urljoin(base_url, 'favicon.ico')
             return favicon_url
-        return False
-
+        return None
+    
     
     class Meta:
         ordering = ('-added', )

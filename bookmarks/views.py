@@ -35,10 +35,10 @@ def add(request):
                     "Connection" : "close",
                     ##"User-Agent": settings.URL_VALIDATOR_USER_AGENT
                     }
-                req = urllib2.Request(bookmark.get_favicon_url() ,None, headers)
+                req = urllib2.Request(bookmark.get_favicon_url(force=True), None, headers)
                 u = urllib2.urlopen(req)
                 has_favicon = True
-            except: 
+            except:
                 has_favicon = False
 
             bookmark.has_favicon = has_favicon
