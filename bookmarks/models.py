@@ -45,6 +45,9 @@ class Bookmark(models.Model):
             return favicon_url
         return None
     
+    def __unicode__(self):
+        return self.url
+    
     class Meta:
         ordering = ('-added', )
     
@@ -61,10 +64,6 @@ class BookmarkInstance(models.Model):
     description = models.CharField(_('description'), max_length=100)
     note = models.TextField(_('note'), blank=True)
     
-    def __init__(self, url=None, **kwargs):
-        self.url = url
-        super(BookmarkInstance, self).__init__(**kwargs)
-    
     def save(self):
         try:
             bookmark = Bookmark.objects.get(url=self.url)
@@ -73,6 +72,9 @@ class BookmarkInstance(models.Model):
             bookmark.save()
         self.bookmark = bookmark
         super(BookmarkInstance, self).save()
+    
+    def __unicode__(self):
+        return u"%s for %s" % (self.bookmark, self.user)
     
     class Admin:
         pass
