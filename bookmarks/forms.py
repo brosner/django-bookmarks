@@ -37,6 +37,10 @@ class BookmarkInstanceForm(forms.ModelForm):
         else:
             return False
     
+    def save(self, commit=True):
+        self.instance.url = self.cleaned_data['url']
+        return super(BookmarkInstanceForm, self).save(commit)
+    
     class Meta:
         model = BookmarkInstance
         exclude = ('user', 'bookmark', 'saved')
