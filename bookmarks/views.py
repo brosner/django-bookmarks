@@ -9,24 +9,24 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 
 from bookmarks.models import Bookmark
-from bookmarks.forms import BookmarkForm
+from bookmarks.forms import BookmarkInstanceForm
 
 def bookmarks(request):
     bookmarks = Bookmark.objects.all().order_by("-added")
-
+    
     return render_to_response("bookmarks/bookmarks.html", {
         "bookmarks": bookmarks,
     }, context_instance=RequestContext(request))
 
 @login_required
 def add(request):
-
+    
     if request.method == "POST":
-        bookmark_form = BookmarkForm(request.POST)
+        bookmark_form = BookmarkInstanceForm(request.POST)
         if bookmark_form.is_valid():
             bookmark = bookmark_form.save(commit=False)
-            bookmark.adder = request.user
-
+            bookmark.user = request.user
+            
             try:
                 headers = {
                     "Accept" : "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5",
@@ -40,7 +40,7 @@ def add(request):
                 has_favicon = True
             except:
                 has_favicon = False
-
+            
             bookmark.has_favicon = has_favicon
             bookmark.favicon_checked = datetime.now() 
             bookmark.save()
@@ -58,10 +58,10 @@ def add(request):
             initial["redirect"] = request.GET["redirect"]
         
         if initial:
-            bookmark_form = BookmarkForm(initial=initial)
+            bookmark_form = BookmarkInstanceForm(initial=initial)
         else:
-            bookmark_form = BookmarkForm()
-
+            bookmark_form = BookmarkInstanceForm()
+    
     return render_to_response("bookmarks/add.html", {
         "bookmark_form": bookmark_form,
     }, context_instance=RequestContext(request))
