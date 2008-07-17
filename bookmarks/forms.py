@@ -10,10 +10,16 @@ class BookmarkInstanceForm(forms.ModelForm):
     description = forms.CharField(max_length=100, widget=forms.TextInput(attrs={"size": 40}))
     redirect = forms.BooleanField(label="Redirect", required=False)
     
-    def __init__(self, *args, **kwargs):
+    def __init__(self, user=None, *args, **kwargs):
+        self.user = user
         super(BookmarkInstanceForm, self).__init__(*args, **kwargs)
         # hack to order fields
         self.fields.keyOrder = ['url', 'description', 'note', 'redirect']
+    
+    def clean(self):
+        if BookmarkInstance.objects.filter(bookmark__url=self.cleaned_data['url'], user=self.user).count() > 0:
+            raise forms.ValidationError(_("You have already bookmarked this link."))
+        return self.cleaned_data
                 
     def should_redirect(self):
         if self.cleaned_data["redirect"]:

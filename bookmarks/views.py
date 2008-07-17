@@ -22,7 +22,7 @@ def bookmarks(request):
 def add(request):
     
     if request.method == "POST":
-        bookmark_form = BookmarkInstanceForm(request.POST)
+        bookmark_form = BookmarkInstanceForm(request.user, request.POST)
         if bookmark_form.is_valid():
             bookmark_instance = bookmark_form.save(commit=False)
             bookmark_instance.user = request.user
