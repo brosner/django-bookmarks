@@ -24,8 +24,9 @@ def add(request):
     if request.method == "POST":
         bookmark_form = BookmarkInstanceForm(request.POST)
         if bookmark_form.is_valid():
-            bookmark = bookmark_form.save(commit=False)
-            bookmark.user = request.user
+            bookmark_instance = bookmark_form.save(commit=False)
+            bookmark_instance.user = request.user
+            bookmark = bookmark_instance.bookmark
             
             try:
                 headers = {
@@ -44,6 +45,8 @@ def add(request):
             bookmark.has_favicon = has_favicon
             bookmark.favicon_checked = datetime.now() 
             bookmark.save()
+            bookmark_instance.save()
+            
             if bookmark_form.should_redirect():
                 return HttpResponseRedirect(bookmark.url)
             else:
