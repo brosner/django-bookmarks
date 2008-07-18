@@ -13,9 +13,10 @@ from bookmarks.forms import BookmarkInstanceForm
 
 def bookmarks(request):
     bookmarks = Bookmark.objects.all().order_by("-added")
-    
+    user_bookmarks = Bookmark.objects.filter(saved_instances__user=request.user)
     return render_to_response("bookmarks/bookmarks.html", {
         "bookmarks": bookmarks,
+        "user_bookmarks": user_bookmarks,
     }, context_instance=RequestContext(request))
 
 @login_required
