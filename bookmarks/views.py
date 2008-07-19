@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 
+from django.utils.translation import ugettext_lazy as _
+
 from bookmarks.models import Bookmark
 from bookmarks.forms import BookmarkInstanceForm
 
@@ -51,6 +53,7 @@ def add(request):
             if bookmark_form.should_redirect():
                 return HttpResponseRedirect(bookmark.url)
             else:
+                request.user.message_set.create(message=_("You have saved bookmark '%(description)s'") % {'description': bookmark_instance.description})
                 return HttpResponseRedirect(reverse("bookmarks.views.bookmarks"))
     else:
         initial = {}
