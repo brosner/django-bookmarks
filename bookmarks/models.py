@@ -50,9 +50,6 @@ class Bookmark(models.Model):
     
     class Meta:
         ordering = ('-added', )
-    
-    class Admin:
-        list_display = ('url', 'description', 'added', 'adder',)
 
 
 class BookmarkInstance(models.Model):
@@ -75,6 +72,3 @@ class BookmarkInstance(models.Model):
     
     def __unicode__(self):
         return u"%s for %s" % (self.bookmark, self.user)
-    
-    class Admin:
-        pass
