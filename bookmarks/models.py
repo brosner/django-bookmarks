@@ -65,7 +65,8 @@ class BookmarkInstance(models.Model):
         try:
             bookmark = Bookmark.objects.get(url=self.url)
         except Bookmark.DoesNotExist:
-            bookmark = Bookmark(url=self.url, description=self.description, note=self.note, adder=self.user)
+            # has_favicon=False is temporary as the view for adding bookmarks will change it
+            bookmark = Bookmark(url=self.url, description=self.description, note=self.note, has_favicon=False, adder=self.user)
             bookmark.save()
         self.bookmark = bookmark
         super(BookmarkInstance, self).save()
