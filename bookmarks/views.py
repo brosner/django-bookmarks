@@ -15,7 +15,10 @@ from bookmarks.forms import BookmarkInstanceForm
 
 def bookmarks(request):
     bookmarks = Bookmark.objects.all().order_by("-added")
-    user_bookmarks = Bookmark.objects.filter(saved_instances__user=request.user)
+    if request.user.is_authenticated():
+        user_bookmarks = Bookmark.objects.filter(saved_instances__user=request.user)
+    else:
+        user_bookmarks = []
     return render_to_response("bookmarks/bookmarks.html", {
         "bookmarks": bookmarks,
         "user_bookmarks": user_bookmarks,
