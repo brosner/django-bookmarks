@@ -6,6 +6,9 @@ from django.utils.translation import ugettext_lazy as _
 
 from django.contrib.auth.models import User
 
+from tagging.fields import TagField
+from tagging.models import Tag
+
 """
 A Bookmark is unique to a URL whereas a BookmarkInstance represents a
 particular Bookmark saved by a particular person.
@@ -31,6 +34,8 @@ class Bookmark(models.Model):
     adder = models.ForeignKey(User, related_name="added_bookmarks", verbose_name=_('adder'))
     added = models.DateTimeField(_('added'), default=datetime.now)
     
+    # tags = TagField()
+    
     def get_favicon_url(self, force=False):
         """
         return the URL of the favicon (if it exists) for the site this
@@ -44,6 +49,12 @@ class Bookmark(models.Model):
             favicon_url = urlparse.urljoin(base_url, 'favicon.ico')
             return favicon_url
         return None
+    
+    def all_tags(self, min_count=False):
+        return Tag.objects.usage_for_model(BookmarkInstance, counts=False, min_count=None, filters={'bookmark': self.id})
+    
+    def all_tags_with_counts(self, min_count=False):
+        return Tag.objects.usage_for_model(BookmarkInstance, counts=True, min_count=None, filters={'bookmark': self.id})
     
     def __unicode__(self):
         return self.url
@@ -60,6 +71,8 @@ class BookmarkInstance(models.Model):
     
     description = models.CharField(_('description'), max_length=100)
     note = models.TextField(_('note'), blank=True)
+    
+    tags = TagField()
     
     def save(self):
         try:
