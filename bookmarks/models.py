@@ -85,4 +85,4 @@ class BookmarkInstance(models.Model):
         super(BookmarkInstance, self).save()
     
     def __unicode__(self):
-        return u"%s for %s" % (self.bookmark, self.user)
+        return _("%(bookmark)s for %(user)s") % {'bookmark':self.bookmark, 'user':self.user}
