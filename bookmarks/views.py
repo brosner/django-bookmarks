@@ -7,6 +7,7 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.contrib.sites.models import Site
 
 from django.utils.translation import ugettext_lazy as _
 
@@ -72,6 +73,10 @@ def add(request):
         else:
             bookmark_form = BookmarkInstanceForm()
     
+    bookmarks_add_url = "http://" + Site.objects.get_current().domain + reverse(add)
+    bookmarklet = "javascript:location.href='%s?url='+encodeURIComponent(location.href)+';description='+encodeURIComponent(document.title)+';redirect=on'" % bookmarks_add_url
+    
     return render_to_response("bookmarks/add.html", {
+        "bookmarklet": bookmarklet,
         "bookmark_form": bookmark_form,
     }, context_instance=RequestContext(request))
