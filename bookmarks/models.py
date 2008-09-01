@@ -74,7 +74,7 @@ class BookmarkInstance(models.Model):
     
     tags = TagField()
     
-    def save(self):
+    def save(self, force_insert=False, force_update=False):
         try:
             bookmark = Bookmark.objects.get(url=self.url)
         except Bookmark.DoesNotExist:
@@ -82,7 +82,7 @@ class BookmarkInstance(models.Model):
             bookmark = Bookmark(url=self.url, description=self.description, note=self.note, has_favicon=False, adder=self.user)
             bookmark.save()
         self.bookmark = bookmark
-        super(BookmarkInstance, self).save()
+        super(BookmarkInstance, self).save(force_insert, force_update)
     
     def __unicode__(self):
         return _("%(bookmark)s for %(user)s") % {'bookmark':self.bookmark, 'user':self.user}
