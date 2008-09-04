@@ -19,6 +19,8 @@ class BookmarkInstanceForm(forms.ModelForm):
         self.fields.keyOrder = ['url', 'description', 'note', 'tags', 'redirect']
     
     def clean(self):
+        if 'url' not in self.cleaned_data:
+            return
         if BookmarkInstance.objects.filter(bookmark__url=self.cleaned_data['url'], user=self.user).count() > 0:
             raise forms.ValidationError(_("You have already bookmarked this link."))
         return self.cleaned_data
