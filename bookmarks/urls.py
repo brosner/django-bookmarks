@@ -5,8 +5,9 @@ from voting.views import vote_on_object
 from bookmarks.models import Bookmark
 
 urlpatterns = patterns('',
-    (r'^$', 'bookmarks.views.bookmarks'),
-    (r'^add/$', 'bookmarks.views.add'),
+    url(r'^$', 'bookmarks.views.bookmarks', name="all_bookmarks"),
+    url(r'^your_bookmarks/$', 'bookmarks.views.your_bookmarks', name="your_bookmarks"),
+    url(r'^add/$', 'bookmarks.views.add', name="add_bookmark"),
     
     # for voting
     (r'^(?P<object_id>\d+)/(?P<direction>up|down|clear)vote/?$',

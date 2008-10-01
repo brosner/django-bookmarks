@@ -11,7 +11,7 @@ from django.contrib.sites.models import Site
 
 from django.utils.translation import ugettext_lazy as _
 
-from bookmarks.models import Bookmark
+from bookmarks.models import Bookmark, BookmarkInstance
 from bookmarks.forms import BookmarkInstanceForm
 
 def bookmarks(request):
@@ -23,6 +23,14 @@ def bookmarks(request):
     return render_to_response("bookmarks/bookmarks.html", {
         "bookmarks": bookmarks,
         "user_bookmarks": user_bookmarks,
+    }, context_instance=RequestContext(request))
+
+
+@login_required
+def your_bookmarks(request):
+    bookmark_instances = BookmarkInstance.objects.filter(user=request.user).order_by("-saved")
+    return render_to_response("bookmarks/your_bookmarks.html", {
+        "bookmark_instances": bookmark_instances,
     }, context_instance=RequestContext(request))
 
 @login_required
