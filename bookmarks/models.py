@@ -84,5 +84,11 @@ class BookmarkInstance(models.Model):
         self.bookmark = bookmark
         super(BookmarkInstance, self).save(force_insert, force_update)
     
+    def delete(self):
+        bookmark = self.bookmark
+        super(BookmarkInstance, self).delete()
+        if bookmark.saved_instances.all().count() == 0:
+            bookmark.delete()
+    
     def __unicode__(self):
         return _("%(bookmark)s for %(user)s") % {'bookmark':self.bookmark, 'user':self.user}

@@ -88,3 +88,19 @@ def add(request):
         "bookmarklet": bookmarklet,
         "bookmark_form": bookmark_form,
     }, context_instance=RequestContext(request))
+
+@login_required
+def delete(request, bookmark_instance_id):
+    
+    bookmark_instance = get_object_or_404(BookmarkInstance, id=bookmark_instance_id)
+    if request.user == bookmark_instance.user:
+        bookmark_instance.delete()
+        request.user.message_set.create(message="Bookmark Deleted")
+        
+    if "next" in request.GET:
+        next = request.GET["next"]
+    else:
+        next = reverse("bookmarks.views.bookmarks")
+    
+    return HttpResponseRedirect(next)
+    
