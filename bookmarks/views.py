@@ -72,7 +72,7 @@ def add(request):
         if "url" in request.GET:
             initial["url"] = request.GET["url"]
         if "description" in request.GET:
-            initial["description"] = request.GET["description"]
+            initial["description"] = request.GET["description"].strip()
         if "redirect" in request.GET:
             initial["redirect"] = request.GET["redirect"]
         
